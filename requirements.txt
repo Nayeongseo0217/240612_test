@@ -1,0 +1,2 @@
+streamlit==1.18.1  # Streamlit의 최신 버전 사용을 권장합니다.
+openai==0.27.0     # OpenAI의 최신 버전 사용을 권장합니다.
