@@ -21,24 +21,27 @@ if len(st.session_state.messages) == 0:
 
 for idx, message in enumerate(st.session_state.messages):
     if idx > 0:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
+        role = "User" if message["role"] == "user" else "Assistant"
+        st.markdown(f"**{role}:** {message['content']}")
 
-if prompt := st.chat_input("What is up?"):
+prompt = st.text_input("What is up?")
+
+if prompt:
     st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"):
-        st.markdown(prompt)
+    st.markdown(f"**User:** {prompt}")
 
-    with st.chat_message("assistant"):
-        response = openai.ChatCompletion.create(
-            model=st.session_state["openai_model"],
-            messages=st.session_state.messages,
-            temperature=0.7,
-            max_tokens=150,
-            top_p=1.0,
-            frequency_penalty=0.0,
-            presence_penalty=0.0
-        )
-        assistant_message = response.choices[0].message["content"].strip()
-        st.markdown(assistant_message)
-        st.session_state.messages.append({"role": "assistant", "content": assistant_message})
+    response = openai.ChatCompletion.create(
+        model=st.session_state["openai_model"],
+        messages=st.session_state.messages,
+        temperature=0.7,
+        max_tokens=150,
+        top_p=1.0,
+        frequency_penalty=0.0,
+        presence_penalty=0.0
+    )
+    assistant_message = response.choices[0].message["content"].strip()
+    st.markdown(f"**Assistant:** {assistant_message}")
+    st.session_state.messages.append({"role": "assistant", "content": assistant_message})
+
+# Clear the input box after submission
+st.text_input("What is up?", value="", key="chat_input")
